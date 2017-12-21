@@ -1,13 +1,5 @@
 package model
 
-import (
-	"net/http"
-	"io/ioutil"
-	"encoding/json"
-	"fmt"
-)
-
-const BITVALOR_API_URL = "https://api.bitvalor.com/v1/ticker.json"
 
 type BitValorResponse struct {
 	Ticker24h Ticker `json:"ticker_24h"`
@@ -16,12 +8,12 @@ type BitValorResponse struct {
 }
 
 type Ticker struct {
-	Total Values `json: "total"`
-	Exchanges Exchanges `json:"exchanges"`
+	Total     Values         `json: "total"`
+	Exchanges ExchangeValues `json:"exchanges"`
 }
 
-type Exchanges struct {
-	FOX Values `json:"FOX"`
+type ExchangeValues struct {
+	FOX Values
 	ARN Values
 	B2U Values
 	BTD Values
@@ -40,21 +32,4 @@ type Values struct {
 	Vwap float64 `json:"vwap"`
 	Money float64 `json:"money"`
 	Trades uint64 `json:"trades"`
-}
-
-func FetchData() BitValorResponse {
-	resp, err := http.Get(BITVALOR_API_URL)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	b, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	bitValorResponse := BitValorResponse{}
-	json.Unmarshal([]byte(string(b)), &bitValorResponse)
-
-	return bitValorResponse
 }
